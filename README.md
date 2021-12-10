@@ -1,3 +1,6 @@
+ここから  
+https://remix.run/docs/en/v1/tutorials/blog#dynamic-route-params
+
 # Welcome to Remix!
 
 - [Remix Docs](https://remix.run/docs)
