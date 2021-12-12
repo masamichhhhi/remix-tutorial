@@ -2,6 +2,7 @@ import path from "path";
 import fs from "fs/promises";
 import parseFrontMatter from "front-matter";
 import invariant from "tiny-invariant";
+import { marked } from "marked";
 
 export type Post = {
   slug: string;
@@ -20,23 +21,24 @@ function isValidPostAttributes(
   return attributes?.title;
 }
 
-export async function getPosts() {
-  const dir = await fs.readdir(postsPath);
+export async function getPosts(slug: string) {
+  const filepath = path.join(postsPath, slug + ".md");
+  console.log(slug);
 
-  return Promise.all(
-    dir.map(async (filename) => {
-      const file = await fs.readFile(path.join(postsPath, filename));
-      const { attributes } = parseFrontMatter(file.toString());
+  const file = await fs.readFile(filepath);
 
-      invariant(
-        isValidPostAttributes(attributes),
-        `${filename} has bad meta data!`
-      );
+  const { attributes, body } = parseFrontMatter(file.toString());
 
-      return {
-        slug: filename.replace(/\.md$/, ""),
-        title: attributes.title,
-      };
-    })
+  invariant(
+    isValidPostAttributes(attributes),
+    `${filepath} has bad meta data!`
   );
+
+  const html = marked(body);
+
+  return {
+    slug,
+    html,
+    title: attributes.title,
+  };
 }

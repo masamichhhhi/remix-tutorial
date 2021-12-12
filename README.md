@@ -1,5 +1,5 @@
 ここから  
-https://remix.run/docs/en/v1/tutorials/blog#dynamic-route-params
+https://remix.run/docs/en/v1/tutorials/blog#creating-blog-posts
 
 # Welcome to Remix!
 
