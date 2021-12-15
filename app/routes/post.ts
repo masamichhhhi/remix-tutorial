@@ -21,7 +21,7 @@ function isValidPostAttributes(
   return attributes?.title;
 }
 
-export async function getPosts(slug: string) {
+export async function getPost(slug: string) {
   const filepath = path.join(postsPath, slug + ".md");
   console.log(slug);
 
@@ -41,4 +41,22 @@ export async function getPosts(slug: string) {
     html,
     title: attributes.title,
   };
+}
+
+export async function getPosts() {
+  const dir = await fs.readdir(postsPath);
+  return Promise.all(
+    dir.map(async (filename) => {
+      const file = await fs.readFile(path.join(postsPath, filename));
+      const { attributes } = parseFrontMatter(file.toString());
+      invariant(
+        isValidPostAttributes(attributes),
+        `${filename} has bad meta data!`
+      );
+      return {
+        slug: filename.replace(/\.md$/, ""),
+        title: attributes.title,
+      };
+    })
+  );
 }
